@@ -17,6 +17,8 @@
  * @link          https://cakephp.org CakePHP(tm) Project
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
+use App\Controller\Component\GestionController;
 use Cake\Http\Middleware\CsrfProtectionMiddleware;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
@@ -102,3 +104,37 @@ Router::scope('/', function (RouteBuilder $routes) {
  * });
  * ```
  */
+
+Router::scope('/users', function ($routes){
+    $routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Users', 'action' => GestionController::$ListingMethod]);
+    $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Users', 'action' => GestionController::$ViewMethod]);
+    $routes->connect(GestionController::$AddMethod . '/', ['controller' => 'Users', 'action' => GestionController::$AddMethod]);
+    $routes->connect(GestionController::$EditMethod . '/:id', ['controller' => 'Users', 'action' => GestionController::$EditMethod]);
+    $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Users', 'action' => GestionController::$DeleteMethod]);
+});
+
+Router::scope('/categories', function ($routes){
+    $routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Categories', 'action' => GestionController::$ListingMethod]);
+    $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Categories', 'action' => GestionController::$ViewMethod]);
+    $routes->connect(GestionController::$AddMethod .'/', ['controller' => 'Categories', 'action' => GestionController::$AddMethod]);
+    $routes->connect(GestionController::$EditMethod . '/:id', ['controller' => 'Categories', 'action' => GestionController::$EditMethod]);
+    $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Categories', 'action' => GestionController::$DeleteMethod]);
+});
+
+Router::scope('/comments', function ($routes){
+    /*$routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Comments', 'action' => GestionController::$ListingMethod]);
+    $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Comments', 'action' => GestionController::$ViewMethod]);
+    $routes->connect(GestionController::$AddMethod . '/', ['controller' => 'Comments', 'action' => GestionController::$AddMethod]);
+    $routes->connect(GestionController::$EditMethod . '/:id', ['controller' => 'Comments', 'action' => GestionController::$EditMethod]);
+    $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Comments', 'action' => GestionController::$DeleteMethod]);
+    */$routes->connect('/hola/:id', ['controller' => 'Comments', 'action' => 'index']);
+});
+
+Router::scope('/posts', function ($routes){
+    $routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Posts', 'action' => GestionController::$ListingMethod]);
+    $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Comments', 'action' => 'index']);//'GestionController::$ViewMethod']);
+    $routes->connect(GestionController::$AddMethod . '/', ['controller' => 'Posts', 'action' => GestionController::$AddMethod]);
+    $routes->connect(GestionController::$EditMethod . '/:id', ['controller' => 'Posts', 'action' => GestionController::$EditMethod]);
+    $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Posts', 'action' => GestionController::$DeleteMethod]);
+    $routes->connect('/comments/:id', ['controller' => 'Comments', 'action' => 'index']);
+});
