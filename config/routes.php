@@ -106,6 +106,12 @@ Router::scope('/', function (RouteBuilder $routes) {
  */
 
 Router::scope('/users', function ($routes){
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
+        'httpOnly' => true
+    ]));
+    $routes->applyMiddleware('csrf');
+
+    //El uso de usuarios solo está con el objetivo de que pueda postear.
     $routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Users', 'action' => GestionController::$ListingMethod]);
     $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Users', 'action' => GestionController::$ViewMethod]);
     $routes->connect(GestionController::$AddMethod . '/', ['controller' => 'Users', 'action' => GestionController::$AddMethod]);
@@ -114,27 +120,37 @@ Router::scope('/users', function ($routes){
 });
 
 Router::scope('/categories', function ($routes){
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
+        'httpOnly' => true
+    ]));
+    $routes->applyMiddleware('csrf');
+
+    // Las categorías no deberían poder borrarse ni editarse en un principio, para evitar tener problemas con los comentarios
     $routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Categories', 'action' => GestionController::$ListingMethod]);
     $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Categories', 'action' => GestionController::$ViewMethod]);
     $routes->connect(GestionController::$AddMethod .'/', ['controller' => 'Categories', 'action' => GestionController::$AddMethod]);
-    $routes->connect(GestionController::$EditMethod . '/:id', ['controller' => 'Categories', 'action' => GestionController::$EditMethod]);
-    $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Categories', 'action' => GestionController::$DeleteMethod]);
-});
-
-Router::scope('/comments', function ($routes){
-    /*$routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Comments', 'action' => GestionController::$ListingMethod]);
-    $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Comments', 'action' => GestionController::$ViewMethod]);
-    $routes->connect(GestionController::$AddMethod . '/', ['controller' => 'Comments', 'action' => GestionController::$AddMethod]);
-    $routes->connect(GestionController::$EditMethod . '/:id', ['controller' => 'Comments', 'action' => GestionController::$EditMethod]);
-    $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Comments', 'action' => GestionController::$DeleteMethod]);
-    */$routes->connect('/hola/:id', ['controller' => 'Comments', 'action' => 'index']);
 });
 
 Router::scope('/posts', function ($routes){
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
+        'httpOnly' => true
+    ]));
+    $routes->applyMiddleware('csrf');
+
     $routes->connect(GestionController::$ListingMethod . '/', ['controller' => 'Posts', 'action' => GestionController::$ListingMethod]);
-    $routes->connect(GestionController::$ViewMethod . '/:id', ['controller' => 'Comments', 'action' => 'index']);//'GestionController::$ViewMethod']);
     $routes->connect(GestionController::$AddMethod . '/', ['controller' => 'Posts', 'action' => GestionController::$AddMethod]);
     $routes->connect(GestionController::$EditMethod . '/:id', ['controller' => 'Posts', 'action' => GestionController::$EditMethod]);
     $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Posts', 'action' => GestionController::$DeleteMethod]);
+    $routes->connect('/yourindex/:userId', ['controller' => 'Posts', 'action' => 'yourindex']);
     $routes->connect('/comments/:id', ['controller' => 'Comments', 'action' => 'index']);
+});
+
+Router::scope('/comments', function ($routes){
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
+        'httpOnly' => true
+    ]));
+    $routes->applyMiddleware('csrf');
+
+    //La creación de comentarios se gestiona en la misma "view" del post.
+    $routes->connect(GestionController::$DeleteMethod . '/:id', ['controller' => 'Comments', 'action' => GestionController::$DeleteMethod]);
 });

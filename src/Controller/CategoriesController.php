@@ -16,19 +16,14 @@ class CategoriesController extends GestionController
         return 'category';
     }
 
-    function successMessage()
-    {
-        return 'Categoría guardada correctamente';
-    }
-
-    function errorMessage()
-    {
-        return 'La Categoría no se ha podido guardar';
-    }
-
     function successRedirect()
     {
-        return null;
+        return $this->redirect('/categories/index');
+    }
+
+    function headerDescriptions()
+    {
+        return['edit' => 'Modifica Categoría', 'add' => 'Añadir Categoría'];
     }
 
     function paramsToAddWindows()
@@ -37,6 +32,11 @@ class CategoriesController extends GestionController
     }
 
     function paramsToViewWindows()
+    {
+        return [];
+    }
+
+    function paramsToUpdateWindows()
     {
         return [];
     }

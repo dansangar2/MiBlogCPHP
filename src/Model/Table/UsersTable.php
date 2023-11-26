@@ -79,7 +79,7 @@ class UsersTable extends Table
             ->scalar('password')
             ->maxLength('password', 255)
             ->requirePresence('password', 'create')
-            ->notEmptyString('password');
+            ->notEmptyString('password', 'Campo obligatorio', 'create');
 
         return $validator;
     }
@@ -102,5 +102,11 @@ class UsersTable extends Table
     {
         $query->select(['id', 'name', 'email', 'password']);//->where(['Users.active'=>1]);
         return $query;
+    }
+
+    public function passwordOf($id)
+    {
+        $pass = $this->get($id)->password;
+        return $pass;
     }
 }

@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Controller\Component\GestionController;
 use Cake\ORM\TableRegistry;
 
-class CommentsController extends GestionController
+class CommentsController extends AppController
 {
 
     public function index()
@@ -13,7 +13,7 @@ class CommentsController extends GestionController
         $postId = $this->getRequest()->getParam('id');
         $post = TableRegistry::getTableLocator()->get('Posts')->get($postId);
         $newPost = $this->Comments->newEntity();
-        $this->paginate = ['conditions' => ['post_id' => $postId]];
+        $this->paginate = ['conditions' => ['post_id' => $postId], 'order' => ['modified' => 'desc']];
         $items = $this->paginate($this->Comments);
 
         if($this->request->is('post'))
@@ -21,14 +21,10 @@ class CommentsController extends GestionController
             $newPost->user_id = $this->Auth->user('id');
             $newPost->post_id = $postId;
             $newPost = $this->item()->patchEntity($newPost, $this->request->getData());
-            debug($this->request->getData());
-            if($this->item()->save($newPost))
-            {
-                $newPost = $this->Comments->newEntity();
+            if($this->item()->save($newPost)) {
                 $this->Flash->success('Comentario posteado correctamente');
-            }
-            else
-            {
+                return $this->redirect('/posts/comments/' . $postId);
+            } else {
                 $this->Flash->success('Tu comentario no se ha podido subir');
             }
         }
@@ -39,38 +35,33 @@ class CommentsController extends GestionController
 
     }
 
+    public function delete($id)
+    {
+        $item = $this->item()->get($id);
+
+        $postId = $item->post_id;
+        $redirect = ['controller' => 'Posts' , 'action' => 'comments/' . $postId];
+        $requests = ['post', 'delete'];
+        //Debería redireccionar a index o a un mensaje de "acción prohíbida" si se intenta borrar por URL.
+        if(!$this->request->is($requests))
+        {
+            return $this->redirect($redirect);
+        }
+
+        //Si la primera comprobación no es eficaz, entonces lanzará el error como segunda medida de seguridad.
+        $this->request->allowMethod($requests);
+
+        if($this->item()->delete($item)) {
+            $this->Flash->success('Borrado correctamente');
+        } else {
+            $this->Flash->success('No se ha podido borrar.');
+        }
+
+        return $this->redirect($redirect);
+    }
+
     function item()
     {
         return $this->Comments;
-    }
-
-    function itemName()
-    {
-        return 'comment';
-    }
-
-    function successMessage()
-    {
-        return 'Comentario guardado correctamente';
-    }
-
-    function errorMessage()
-    {
-        return 'El Comentario no se ha podido guardar';
-    }
-
-    function paramsToViewWindows()
-    {
-        return [];
-    }
-
-    function successRedirect()
-    {
-        return $this->redirect('/comments/index');
-    }
-
-    function paramsToAddWindows()
-    {
-        return [];
     }
 }

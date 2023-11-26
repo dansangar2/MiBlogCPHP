@@ -8,33 +8,24 @@ use Cake\ORM\TableRegistry;
 class PostsController extends GestionController
 {
 
-    public function isAuthorized($user)
-    {
-        if(in_array($this->request->action, ['edit', 'delete'])) {
-            $post = $this->Posts->get($this->request->getParam('pass', 0));
-            print $post;
-            return $post->user_id == $user['id'];
-        }
-        return parent::isAuthorized($user);
-    }
 
     public function view($id)
     {
-        $item = $this->item()->get($id);
-        $comments = TableRegistry::getTableLocator()->get('Comments')->find();
-        $readonly = true;
-        $desc = $item->name;
-        debug($comments);
-        $this->set(compact('item'));
-        $this->set(compact('readonly'));
-        $this->set(compact('desc'));
-        $this->set(compact('comments'));
-        foreach ($this->paramsToViewWindows() as $k => $v)
-        {
-            $item->$k = $v;
-            $this->set(compact($k));
-        }
-        return $this->render($this->itemName() . "_view");//, compact('item', 'readonly'));
+        return $this->redirect(['action' => 'comments/' . $id]);
+    }
+
+
+    public function yourindex()
+    {
+        $userId = $this->request->getParam('userId');
+
+        $this->paginate = ['conditions' => ['user_id' => $userId], 'order' => ['modified' => 'desc']];
+        $items = $this->paginate($this->item());
+        $this->set($this->itemName(), $items);
+        $your = 'your';
+        $this->set('your', $your);
+
+        return $this->render("index");
     }
 
     function item()
@@ -47,15 +38,6 @@ class PostsController extends GestionController
         return 'post';
     }
 
-    function successMessage()
-    {
-        return 'Mensaje guardado correctamente';
-    }
-
-    function errorMessage()
-    {
-        return 'El Mensaje no se ha podido guardar';
-    }
 
     function successRedirect()
     {
@@ -70,5 +52,15 @@ class PostsController extends GestionController
     function paramsToViewWindows()
     {
         return [];
+    }
+
+    function paramsToUpdateWindows()
+    {
+        return [];
+    }
+
+    function headerDescriptions()
+    {
+        return['edit' => 'Modifica Post', 'add' => 'Agregar un nuevo blog'];
     }
 }

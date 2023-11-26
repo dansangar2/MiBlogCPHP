@@ -4,12 +4,7 @@
  * @var \Cake\Datasource\EntityInterface $item
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['action' => 'index']) ?></li>
-    </ul>
-</nav>
+<?= $this->element('menu') ?>
 <div class="users form large-9 medium-8 columns content">
     <?= $this->Form->create($item) ?>
     <fieldset>
@@ -19,12 +14,14 @@
             echo $this->Form->control('name', ['readonly' => $readonly]);
             echo $this->Form->control('email', ['readonly' => $readonly]);
             if(!$readonly) {
-                echo $this->Form->control('password', ['readonly' => $readonly]);
+                echo $this->Form->control('password', ['value' => '', 'readonly' => $readonly]);
             }
         ?>
     </fieldset>
     <?php if(!$readonly): ?>
     <?= $this->Form->button(__('Guardar')); ?>
+    <?php else: ?>
+    <?= $this->Html->link(__('Editar'), ['controller' => 'Users', 'action' => 'edit/' . $item->id])?>
     <?php endif; ?>
     <?= $this->Form->end() ?>
 </div>

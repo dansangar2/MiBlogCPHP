@@ -3,6 +3,9 @@
  * @var \App\View\AppView                                             $this
  * @var \App\Model\Entity\Post[]|\Cake\Collection\CollectionInterface $post
  */
+
+use Cake\ORM\TableRegistry;
+
 ?>
 <?= $this->element('menu') ?>
 <div class="posts index large-9 medium-8 columns content">
@@ -12,7 +15,6 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('tittle') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('user_id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('category_id') ?></th>
@@ -22,18 +24,24 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($post as $p): ?>
+            <?php
+            $users = TableRegistry::getTableLocator()->get('Users');
+            $categories = TableRegistry::getTableLocator()->get('Categories');
+            foreach ($post as $p):
+
+                ?>
             <tr>
-                <td><?= $this->Number->format($p->id) ?></td>
                 <td><?= h($p->tittle) ?></td>
-                <td><?= $p->has('user') ? $this->Html->link($p->user->name, ['controller' => 'Users', 'action' => 'view', $p->user->id]) : '' ?></td>
-                <td><?= $p->has('category') ? $this->Html->link($p->category->name, ['controller' => 'Categories', 'action' => 'view', $p->category->id]) : '' ?></td>
+                <td><?= h($users->get($p->user_id)->name) ?></td>
+                <td><?= h($categories->get($p->category_id)->name) ?></td>
                 <td><?= h($p->created) ?></td>
                 <td><?= h($p->modified) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $p->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $p->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $p->id], ['confirm' => __('Are you sure you want to delete # {0}?', $p->id)]) ?>
+                    <?= $this->Html->link(__('Ver'), ['action' => '/comments/', $p->id]) ?>
+                    <?php if($p->user_id === $current_user['id']): ?>
+                        <?= $this->Html->link(__('Editar'), ['action' => 'edit', $p->id]) ?>
+                        <?= $this->Form->postLink(__('Borrar'), ['action' => 'delete', $p->id], ['confirm' => __('¿Seguro que quieres borrarlo?', $p->id)]) ?>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>

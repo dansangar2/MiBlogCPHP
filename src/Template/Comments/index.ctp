@@ -5,18 +5,10 @@
  */
 
 use App\Controller\CategoriesController;
+use Cake\ORM\TableRegistry;
 
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Comment'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Posts'), ['controller' => 'Posts', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Post'), ['controller' => 'Posts', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
+<?= $this->element('menu') ?>
 <div class="comments index large-9 medium-8 columns content">
 
     <div>
@@ -51,23 +43,27 @@ use App\Controller\CategoriesController;
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
-                    <th scope="col" colspan="3"><?= $this->Paginator->sort('content') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('user_id') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                    <th scope="col" colspan="3"><?= $this->Paginator->sort('comentario') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Usuario') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Creado') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Modificado') ?></th>
+                    <th scope="col"><?= $this->Paginator->sort('Borrar') ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($comments as $comment): ?>
+                <?php
+                $users = TableRegistry::getTableLocator()->get('Users');
+
+                foreach ($comments as $comment): ?>
                 <tr>
                     <td colspan="3"><?= h($comment->content) ?></td>
-                    <td><?= $comment->has('user') ? $this->Html->link($comment->user->name, ['controller' => 'Users', 'action' => 'view', $comment->user->id]) : '' ?></td>
+                    <td><?= h($users->get($comment->user_id)->name)?></td>
                     <td><?= h($comment->created) ?></td>
                     <td><?= h($comment->modified) ?></td>
                     <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $comment->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $comment->id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $comment->id], ['confirm' => __('Are you sure you want to delete # {0}?', $comment->id)]) ?>
+                        <?php if($comment->user_id == $current_user['id']): ?>
+                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $comment->id]);//, ['confirm' => __('¿Estás seguro que quieres borrarlo?', $comment->id)]) ?>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

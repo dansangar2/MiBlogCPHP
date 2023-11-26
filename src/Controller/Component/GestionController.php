@@ -12,8 +12,24 @@ abstract class GestionController extends AppController
     public static $EditMethod = "edit";
     public static $DeleteMethod = "delete";
 
+    public function isAuthorized($user)
+    {
+        if(in_array($this->request->action, ['edit', 'delete']))
+        {
+            $id = $this->request->getParam('pass', 0);
+            $item = $this->item()->get($id);
+            if(!isset($item->user_id) || $item->user_id == $user['id'])
+            {
+                return true;
+            }
+            return $this->redirect("/posts/index");
+        }
+        return parent::isAuthorized($user);
+    }
+
     public function index()
     {
+        $this->paginate = ['order' => ['modified' => 'desc']];
         $items = $this->paginate($this->item());
         $this->set($this->itemName(), $items);
     }
@@ -31,7 +47,7 @@ abstract class GestionController extends AppController
             $item->$k = $v;
             $this->set(compact($k));
         }
-        return $this->render($this->itemName() . "_view");//, compact('item', 'readonly'));
+        return $this->render($this->itemName() . "_view");
     }
 
     public function add()
@@ -46,40 +62,81 @@ abstract class GestionController extends AppController
             }
             if($this->item()->save($item))
             {
-                $this->Flash->success($this->successMessage());
                 if($this->successRedirect()!=null)
                 {
-                    return $this->successRedirect();
+                    $this->Flash->success('Creado correctamente.');
                 }
             }
             else
             {
-                $this->Flash->success($this->errorMessage());
+                $this->Flash->error('No se ha podido crear.');
             }
         }
-        $desc = "Añadir Usuario";
+        $desc = $this->headerDescriptions()['add'];
         $this->set(compact('item'));
         $this->set(compact('desc'));
-        return $this->render($this->itemName() . "_view");//, compact('post'));
+        return $this->render($this->itemName() . "_view");
     }
 
     public function edit($id)
     {
-        $post = $this->Users->findById($id);
-        return $this->render('edit', compact('post'));
+        $item = $this->item()->get($id);
+
+        if($this->request->is(['post', 'patch', 'put']))
+        {
+            $item = $this->item()->patchEntity($item, $this->request->getData());
+            foreach ($this->paramsToUpdateWindows() as $k => $v)
+            {
+                $item->$k = $v;
+            }
+            if($this->item()->save($item))
+            {
+                if($this->successRedirect()!=null)
+                {
+                    $this->Flash->success('Guardado correctamente.');
+                }
+            }
+            else
+            {
+                $this->Flash->success('No se ha podido guardar.');
+            }
+        }
+        $desc = $this->headerDescriptions()['edit'];
+        $this->set(compact('item'));
+        $this->set(compact('desc'));
+        return $this->render($this->itemName() . "_view");
     }
 
     public function delete($id)
     {
-        $this->Users->delete($id);
-        return $this->redirect('/');
+        $item = $this->item()->get($id);
+
+        $redirect = ['action' => 'index'];
+        $requests = ['post', 'delete'];
+
+        //Debería redireccionar a index o a un mensaje de "acción prohíbida" si se intenta borrar por URL.
+        if(!$this->request->is($requests))
+        {
+            return $this->redirect($redirect);
+        }
+
+        //Si la primera comprobación no es eficaz, entonces lanzará el error como segunda medida de seguridad.
+        $this->request->allowMethod($requests);
+
+        if($this->item()->delete($item)) {
+            $this->Flash->success('Borrado correctamente');
+        } else {
+            $this->Flash->success('No se ha podido borrar.');
+        }
+
+        return $this->redirect($redirect);
     }
 
     abstract function item();
     abstract function itemName();
-    abstract function paramsToViewWindows();
-    abstract function successMessage();
     abstract function successRedirect();
     abstract function paramsToAddWindows();
-    abstract function errorMessage();
+    abstract function paramsToViewWindows();
+    abstract function paramsToUpdateWindows();
+    abstract function headerDescriptions();
 }

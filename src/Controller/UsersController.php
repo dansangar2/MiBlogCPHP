@@ -59,16 +59,6 @@ class UsersController extends GestionController
         return $this->Users;
     }
 
-    function successMessage()
-    {
-        return "Usuario guardado correctamente";
-    }
-
-    function errorMessage()
-    {
-        return "Problemas al guardar el usuario.";
-    }
-
     function itemName()
     {
         return 'user';
@@ -87,5 +77,15 @@ class UsersController extends GestionController
     function paramsToViewWindows()
     {
         return [];
+    }
+
+    function paramsToUpdateWindows()
+    {
+        return [];
+    }
+
+    function headerDescriptions()
+    {
+        return['edit' => 'Modifica Usuario', 'add' => 'Agregar Usuario'];
     }
 }

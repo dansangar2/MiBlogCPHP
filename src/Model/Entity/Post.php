@@ -40,4 +40,5 @@ class Post extends Entity
         'category' => true,
         'comments' => true,
     ];
+
 }
