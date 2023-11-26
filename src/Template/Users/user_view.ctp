@@ -4,7 +4,9 @@
  * @var \Cake\Datasource\EntityInterface $item
  */
 ?>
+<?php if(isset($readonly)): ?>
 <?= $this->element('menu') ?>
+<?php endif; ?>
 <div class="users form large-9 medium-8 columns content">
     <?= $this->Form->create($item) ?>
     <fieldset>

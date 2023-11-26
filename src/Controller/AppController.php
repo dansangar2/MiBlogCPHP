@@ -45,6 +45,7 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
+        //Se agrega autentificación.
         $this->loadComponent('Auth', [
             'authorize' => ['Controller'],
             'authenticate' =>

@@ -4,6 +4,17 @@ namespace App\Controller\Component;
 
 use App\Controller\AppController;
 
+/**
+ * Class GestionController
+ *
+ * Controlador general. Contiene todos los métodos necesarios de getión básica
+ * de una entidad.
+ *
+ * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+ * @version 2023.1126
+ *
+ * @package App\Controller\Component
+ */
 abstract class GestionController extends AppController
 {
     public static $ListingMethod = "index";
@@ -72,7 +83,7 @@ abstract class GestionController extends AppController
                 $this->Flash->error('No se ha podido crear.');
             }
         }
-        $desc = $this->headerDescriptions()['add'];
+        $desc = isset($this->headerDescriptions()['add']) ? $this->headerDescriptions()['add'] : 'añadir';
         $this->set(compact('item'));
         $this->set(compact('desc'));
         return $this->render($this->itemName() . "_view");
@@ -101,7 +112,7 @@ abstract class GestionController extends AppController
                 $this->Flash->success('No se ha podido guardar.');
             }
         }
-        $desc = $this->headerDescriptions()['edit'];
+        $desc = isset($this->headerDescriptions()['edit']) ? $this->headerDescriptions()['edit'] : 'Editar';
         $this->set(compact('item'));
         $this->set(compact('desc'));
         return $this->render($this->itemName() . "_view");
@@ -132,11 +143,105 @@ abstract class GestionController extends AppController
         return $this->redirect($redirect);
     }
 
+    /**
+     * Nombre que tendrá la base de datos.
+     *
+     * Por ejemplo:
+     *
+     * Si en el controlador de Users se retorna en este método:
+     * item() => return 'Users';
+     *
+     * Entonces cada vez que se quiera llamar a la BD, se hará cómo:
+     * $this->Users->[acción]
+     *
+     * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+     * @version 2023.1126
+     *
+     * @return mixed
+     */
     abstract function item();
+
+    /**
+     * El nombre del objeto, usado para redirigir a la vistas.
+     *
+     * Recomendable usar la versión en singular y minúsculas de la entidad y de item().
+     * Por ejemplo:
+     * item() => 'Users'
+     * itemName() => 'user'
+     *
+     * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+     * @version 2023.1126
+     *
+     * @return mixed
+     */
     abstract function itemName();
+
+    /**
+     * Cuando se crea correctamente
+     *
+     * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+     * @version 2023.1126
+     *
+     * @return mixed
+     */
     abstract function successRedirect();
+
+    /**
+     * Array de parámetros que se inicializarán al crear un objeto.
+     *
+     * Por ejemplo:
+     * paramsToAddWindows() => ['name' => 'dummy']
+     * Pondrá el atributo 'name' cómo dummy.
+     *
+     * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+     * @version 2023.1126
+     *
+     * @return array
+     */
     abstract function paramsToAddWindows();
+
+    /**
+     * Array de parámetros que se mandará a la vista.
+     *
+     * Por ejemplo:
+     * paramsToViewWindows() => ['name' => 'dummy']
+     * Mandará a la vista el atributo 'name' con valor 'dummy'
+     *
+     * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+     * @version 2023.1126
+     *
+     * @return array
+     */
     abstract function paramsToViewWindows();
+
+    /**
+     * Array de parámetros que se inicializarán al modificar un objeto.
+     *
+     * Por ejemplo:
+     * paramsToAddWindows() => ['name' => 'dummy']
+     * Pondrá el atributo 'name' cómo dummy.
+     *
+     * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+     * @version 2023.1126
+     *
+     * @return array
+     */
     abstract function paramsToUpdateWindows();
+
+    /**
+     * Texto que se mostrarán en las cabeceras de las ventanas.
+     *
+     * Por ejemplo:
+     * headerDescriptions() => ['edit' => 'Editar Usuario']
+     * Mostrará "Editar Usuario" cuando vayas a editar un Usuario.
+     *
+     * Funciona para "add" y "edit".
+     * ['add' => '', 'edit' => '']
+     *
+     * @author  Daniel San José García <daniel.sanjose@x-netdigital.com>
+     * @version 2023.1126
+     *
+     * @return array
+     */
     abstract function headerDescriptions();
 }

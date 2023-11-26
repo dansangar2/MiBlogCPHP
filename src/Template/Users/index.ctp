@@ -13,7 +13,6 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('name') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('email') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('password') ?></th>
@@ -25,7 +24,6 @@
         <tbody>
             <?php foreach ($user as $u): ?>
             <tr>
-                <td><?= $this->Number->format($u->id) ?></td>
                 <td><?= h($u->name) ?></td>
                 <td><?= h($u->email) ?></td>
                 <td><?= h($u->password) ?></td>

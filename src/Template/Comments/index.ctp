@@ -19,15 +19,9 @@ use Cake\ORM\TableRegistry;
             . (new CategoriesController())->Categories->get($post->category_id)->name . "</h3>
           </div>";
     echo "<textarea readonly style='width: 947px; height: 187px;'>$post->content</textarea>";
-    //echo $post->Form->control('category', ['value' => (new CategoriesController())->Categories->get($item->category_id)->name, 'readonly' => true]);
-    //echo $post->Form->control('content', ['readonly' => true]);
     ?>
     </div>
-
-
-
-    <div>
-        <div class="comments form large-9 medium-8 columns content">
+    <div class="comments form large-9 medium-8 columns content">
         <?= $this->Form->create($newPost) ?>
         <fieldset>
             <legend><?= __('Agregar Comentario') ?></legend>
@@ -39,46 +33,49 @@ use Cake\ORM\TableRegistry;
         <?= $this->Form->end() ?>
     </div>
     <div>
-        <h3><?= __('Comentarios') ?></h3>
-        <table cellpadding="0" cellspacing="0">
-            <thead>
+        <div class="comments form large-12 medium-8 columns content">
+            <div>
+                <h3><?= __('Comentarios') ?></h3>
+            </div>
+            <table cellpadding="0" cellspacing="0">
+                <thead>
                 <tr>
-                    <th scope="col" colspan="3"><?= $this->Paginator->sort('comentario') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('Usuario') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('Creado') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('Modificado') ?></th>
-                    <th scope="col"><?= $this->Paginator->sort('Borrar') ?></th>
+                    <th scope="col" colspan="3">Comentario</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Creado</th>
+                    <th scope="col">Modificado</th>
+                    <th scope="col">Borrar</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <?php
                 $users = TableRegistry::getTableLocator()->get('Users');
 
                 foreach ($comments as $comment): ?>
-                <tr>
-                    <td colspan="3"><?= h($comment->content) ?></td>
-                    <td><?= h($users->get($comment->user_id)->name)?></td>
-                    <td><?= h($comment->created) ?></td>
-                    <td><?= h($comment->modified) ?></td>
-                    <td class="actions">
-                        <?php if($comment->user_id == $current_user['id']): ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $comment->id]);//, ['confirm' => __('¿Estás seguro que quieres borrarlo?', $comment->id)]) ?>
-                        <?php endif; ?>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="3"><?= h($comment->content) ?></td>
+                        <td><?= h($users->get($comment->user_id)->name)?></td>
+                        <td><?= h($comment->created) ?></td>
+                        <td><?= h($comment->modified) ?></td>
+                        <td class="actions">
+                            <?php if($comment->user_id == $current_user['id']): ?>
+                                <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $comment->id]);//, ['confirm' => __('¿Estás seguro que quieres borrarlo?', $comment->id)]) ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
-        <div class="paginator">
-            <ul class="pagination">
-                <?= $this->Paginator->first('<< ' . __('first')) ?>
-                <?= $this->Paginator->prev('< ' . __('previous')) ?>
-                <?= $this->Paginator->numbers() ?>
-                <?= $this->Paginator->next(__('next') . ' >') ?>
-                <?= $this->Paginator->last(__('last') . ' >>') ?>
-            </ul>
-            <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+                </tbody>
+            </table>
+            <div class="paginator">
+                <ul class="pagination">
+                    <?= $this->Paginator->first('<< ' . __('first')) ?>
+                    <?= $this->Paginator->prev('< ' . __('previous')) ?>
+                    <?= $this->Paginator->numbers() ?>
+                    <?= $this->Paginator->next(__('next') . ' >') ?>
+                    <?= $this->Paginator->last(__('last') . ' >>') ?>
+                </ul>
+                <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+            </div>
         </div>
-    </div>
     </div>
 </div>
