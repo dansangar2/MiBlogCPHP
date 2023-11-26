@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Controller\Component\GestionController;
 use Cake\Event\Event;
-use Psr\Log\LogLevel;
 
 class UsersController extends GestionController
 {

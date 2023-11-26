@@ -3,17 +3,14 @@
 namespace App\Controller;
 
 use App\Controller\Component\GestionController;
-use Cake\ORM\TableRegistry;
 
 class PostsController extends GestionController
 {
-
 
     public function view($id)
     {
         return $this->redirect(['action' => 'comments/' . $id]);
     }
-
 
     public function yourindex()
     {

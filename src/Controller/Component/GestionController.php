@@ -25,12 +25,10 @@ abstract class GestionController extends AppController
 
     public function isAuthorized($user)
     {
-        if(in_array($this->request->action, ['edit', 'delete']))
-        {
+        if(in_array($this->request->action, ['edit', 'delete'])) {
             $id = $this->request->getParam('pass', 0);
             $item = $this->item()->get($id);
-            if(!isset($item->user_id) || $item->user_id == $user['id'])
-            {
+            if(!isset($item->user_id) || $item->user_id == $user['id']) {
                 return true;
             }
             return $this->redirect("/posts/index");
@@ -53,8 +51,7 @@ abstract class GestionController extends AppController
         $this->set(compact('item'));
         $this->set(compact('readonly'));
         $this->set(compact('desc'));
-        foreach ($this->paramsToViewWindows() as $k => $v)
-        {
+        foreach ($this->paramsToViewWindows() as $k => $v) {
             $item->$k = $v;
             $this->set(compact($k));
         }
@@ -64,22 +61,16 @@ abstract class GestionController extends AppController
     public function add()
     {
         $item = $this->item()->newEntity();
-        if($this->request->is('post'))
-        {
+        if($this->request->is('post')) {
             $item = $this->item()->patchEntity($item, $this->request->getData());
-            foreach ($this->paramsToAddWindows() as $k => $v)
-            {
+            foreach ($this->paramsToAddWindows() as $k => $v) {
                 $item->$k = $v;
             }
-            if($this->item()->save($item))
-            {
-                if($this->successRedirect()!=null)
-                {
+            if($this->item()->save($item)) {
+                if($this->successRedirect()!=null) {
                     $this->Flash->success('Creado correctamente.');
                 }
-            }
-            else
-            {
+            } else {
                 $this->Flash->error('No se ha podido crear.');
             }
         }
@@ -93,22 +84,16 @@ abstract class GestionController extends AppController
     {
         $item = $this->item()->get($id);
 
-        if($this->request->is(['post', 'patch', 'put']))
-        {
+        if($this->request->is(['post', 'patch', 'put'])) {
             $item = $this->item()->patchEntity($item, $this->request->getData());
-            foreach ($this->paramsToUpdateWindows() as $k => $v)
-            {
+            foreach ($this->paramsToUpdateWindows() as $k => $v) {
                 $item->$k = $v;
             }
-            if($this->item()->save($item))
-            {
-                if($this->successRedirect()!=null)
-                {
+            if($this->item()->save($item)) {
+                if($this->successRedirect()!=null) {
                     $this->Flash->success('Guardado correctamente.');
                 }
-            }
-            else
-            {
+            } else {
                 $this->Flash->success('No se ha podido guardar.');
             }
         }
@@ -126,8 +111,7 @@ abstract class GestionController extends AppController
         $requests = ['post', 'delete'];
 
         //Debería redireccionar a index o a un mensaje de "acción prohíbida" si se intenta borrar por URL.
-        if(!$this->request->is($requests))
-        {
+        if(!$this->request->is($requests)) {
             return $this->redirect($redirect);
         }
 
