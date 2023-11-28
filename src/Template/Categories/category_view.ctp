@@ -10,6 +10,7 @@
     <fieldset>
         <legend><?= __($desc) ?></legend>
         <?php
+            if (!isset($readonly)) $readonly = false;
             echo $this->Form->control('name', ['readonly' => $readonly]);
         ?>
     </fieldset>
